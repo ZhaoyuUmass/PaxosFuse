@@ -1,0 +1,130 @@
+----------------------------------------------------------------
+Thu Apr 07 13:29:19 EDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance a816c00e-0153-f1c5-688c-0000054b6e90 
+on database directory /Users/gaozy/Documents/workspace/PaxosFuse/paxos_logs/paxos_logs.100 with class loader sun.misc.Launcher$AppClassLoader@135fbaa4 
+Loaded from file:/Users/gaozy/Documents/workspace/PaxosFuse/jar/fuse.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_71-b15
+user.dir=/Users/gaozy/Documents/workspace/PaxosFuse
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.11.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Thu Apr 07 13:29:22 EDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance cead00d8-0153-f1c5-688c-0000054b6e90 
+on database directory /Users/gaozy/Documents/workspace/PaxosFuse/paxos_logs/paxos_logs.101 with class loader sun.misc.Launcher$AppClassLoader@135fbaa4 
+Loaded from file:/Users/gaozy/Documents/workspace/PaxosFuse/jar/fuse.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_71-b15
+user.dir=/Users/gaozy/Documents/workspace/PaxosFuse
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.11.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Thu Apr 07 13:29:22 EDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance dd1c41a2-0153-f1c5-688c-0000054b6e90 
+on database directory /Users/gaozy/Documents/workspace/PaxosFuse/paxos_logs/paxos_logs.102 with class loader sun.misc.Launcher$AppClassLoader@135fbaa4 
+Loaded from file:/Users/gaozy/Documents/workspace/PaxosFuse/jar/fuse.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_71-b15
+user.dir=/Users/gaozy/Documents/workspace/PaxosFuse
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.11.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Thu Apr 07 13:29:23 EDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance 5364826c-0153-f1c5-688c-0000054b6e90 
+on database directory /Users/gaozy/Documents/workspace/PaxosFuse/paxos_logs/paxos_logs.103 with class loader sun.misc.Launcher$AppClassLoader@135fbaa4 
+Loaded from file:/Users/gaozy/Documents/workspace/PaxosFuse/jar/fuse.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_71-b15
+user.dir=/Users/gaozy/Documents/workspace/PaxosFuse
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.11.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Thu Apr 07 13:29:23 EDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance b185c336-0153-f1c5-688c-0000054b6e90 
+on database directory /Users/gaozy/Documents/workspace/PaxosFuse/reconfiguration_DB/reconfiguration_DB900 with class loader sun.misc.Launcher$AppClassLoader@135fbaa4 
+Loaded from file:/Users/gaozy/Documents/workspace/PaxosFuse/jar/fuse.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_71-b15
+user.dir=/Users/gaozy/Documents/workspace/PaxosFuse
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.11.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Thu Apr 07 13:29:24 EDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance 89804402-0153-f1c5-688c-0000054b6e90 
+on database directory /Users/gaozy/Documents/workspace/PaxosFuse/paxos_logs/paxos_logs.900 with class loader sun.misc.Launcher$AppClassLoader@135fbaa4 
+Loaded from file:/Users/gaozy/Documents/workspace/PaxosFuse/jar/fuse.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_71-b15
+user.dir=/Users/gaozy/Documents/workspace/PaxosFuse
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.11.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Thu Apr 07 13:29:24 EDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance 97600500-0153-f1c5-688c-0000054b6e90 
+on database directory /Users/gaozy/Documents/workspace/PaxosFuse/reconfiguration_DB/reconfiguration_DB901 with class loader sun.misc.Launcher$AppClassLoader@135fbaa4 
+Loaded from file:/Users/gaozy/Documents/workspace/PaxosFuse/jar/fuse.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_71-b15
+user.dir=/Users/gaozy/Documents/workspace/PaxosFuse
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.11.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Thu Apr 07 13:29:24 EDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance ca9885cc-0153-f1c5-688c-0000054b6e90 
+on database directory /Users/gaozy/Documents/workspace/PaxosFuse/paxos_logs/paxos_logs.901 with class loader sun.misc.Launcher$AppClassLoader@135fbaa4 
+Loaded from file:/Users/gaozy/Documents/workspace/PaxosFuse/jar/fuse.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_71-b15
+user.dir=/Users/gaozy/Documents/workspace/PaxosFuse
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.11.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Thu Apr 07 13:29:25 EDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance 0a1346ca-0153-f1c5-688c-0000054b6e90 
+on database directory /Users/gaozy/Documents/workspace/PaxosFuse/reconfiguration_DB/reconfiguration_DB902 with class loader sun.misc.Launcher$AppClassLoader@135fbaa4 
+Loaded from file:/Users/gaozy/Documents/workspace/PaxosFuse/jar/fuse.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_71-b15
+user.dir=/Users/gaozy/Documents/workspace/PaxosFuse
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.11.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Thu Apr 07 13:29:25 EDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance 9889c796-0153-f1c5-688c-0000054b6e90 
+on database directory /Users/gaozy/Documents/workspace/PaxosFuse/paxos_logs/paxos_logs.902 with class loader sun.misc.Launcher$AppClassLoader@135fbaa4 
+Loaded from file:/Users/gaozy/Documents/workspace/PaxosFuse/jar/fuse.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_71-b15
+user.dir=/Users/gaozy/Documents/workspace/PaxosFuse
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.11.3
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
