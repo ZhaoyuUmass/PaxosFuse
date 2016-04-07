@@ -24,20 +24,30 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 		super();
 	}
 	
-	private static void sendTestReqeust(NumNoopAppClient client, String name) throws IOException{
-		for(int i = 0; i<1; i++){
-			client.sendRequest(new AppRequest(name, "1",
-					AppRequest.PacketType.DEFAULT_APP_REQUEST, false), 
-					new RequestCallback(){
-						@Override
-						public void handleResponse(Request response) {
-							// TODO Auto-generated method stub
-							System.exit(0);
-						}
-				
-					});
-			
+	private class Callback implements RequestCallback{
+
+		@Override
+		public void handleResponse(Request request) {
+			System.out.println(request);
 		}
+		
+	}
+	
+	private static void sendTestReqeust(NumNoopAppClient client, String name) throws IOException{
+		client.sendRequest(new AppRequest(name, "1",
+				AppRequest.PacketType.DEFAULT_APP_REQUEST, false), 
+				new RequestCallback(){
+					@Override
+					public void handleResponse(Request response) {
+						// TODO Auto-generated method stub
+						System.out.println("The response is " +response);
+					}
+			
+				});
+			
+		//client.sendRequest(request, server, callback);
+		
+		//client.sendRequest(request, server, callback);
 	}
 	
 	@Override
