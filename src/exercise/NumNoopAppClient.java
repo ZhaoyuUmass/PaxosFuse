@@ -1,10 +1,12 @@
 package exercise;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.Set;
 
 import org.json.JSONException;
 
+import edu.umass.cs.gigapaxos.PaxosConfig;
 import edu.umass.cs.gigapaxos.interfaces.Request;
 import edu.umass.cs.gigapaxos.interfaces.RequestCallback;
 import edu.umass.cs.nio.interfaces.IntegerPacketType;
@@ -19,16 +21,28 @@ import edu.umass.cs.reconfiguration.reconfigurationutils.RequestParseException;
  *
  */
 public class NumNoopAppClient extends ReconfigurableAppClientAsync {
-
+	
+	static int TOTAL_REQUEST = 0;
+	synchronized static void updateTotalRequest(){
+		TOTAL_REQUEST++;
+	}
+	synchronized static int getTotalRequest(){
+		return TOTAL_REQUEST;
+	}
+	
+	/**
+	 * @throws IOException
+	 */
 	public NumNoopAppClient() throws IOException {
 		super();
 	}
 	
-	private class Callback implements RequestCallback{
+	private static class Callback implements RequestCallback{
 
 		@Override
 		public void handleResponse(Request request) {
 			System.out.println(request);
+			NumNoopAppClient.updateTotalRequest();
 		}
 		
 	}
@@ -44,10 +58,16 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 					}
 			
 				});
-			
-		//client.sendRequest(request, server, callback);
 		
-		//client.sendRequest(request, server, callback);
+		/*
+		for (String activeName:PaxosConfig.getActives().keySet()) {
+			System.out.println("Active: "+activeName);
+			client.sendRequest(new AppRequest(name, "1",
+				AppRequest.PacketType.DEFAULT_APP_REQUEST, false), 
+				PaxosConfig.getActives().get(activeName), 
+				new Callback());
+		}
+		*/
 	}
 	
 	@Override
@@ -75,7 +95,6 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 
 					@Override
 					public void handleResponse(Request request) {
-						// TODO Auto-generated method stub
 						System.out.println("Received:"+request);
 						try {
 							sendTestReqeust(client, name);

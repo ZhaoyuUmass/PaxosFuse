@@ -116,7 +116,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		
 		System.out.println("reconfigured address set is "+reconfiguredAddresses);
 		
-		return null;
+		return reconfiguredAddresses;
 	}
 
 	@Override

@@ -40,11 +40,13 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 		
 		if (appData.containsKey(name)){
 			appData.put(name, appData.get(name)+value);
-			return true;
-		} 
+		} else{
+			appData.put(name, 0);
+		}
 		
+		//System.out.println("Value is "+appData.get(name));
 		this.sendResponse(request);
-		return false;
+		return true;
 	}
 
 	
@@ -56,9 +58,9 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 
 	@Override
 	public boolean restore(String name, String state) {
-		System.out.println("restore: "+name);
+		
 		if(state == null){
-			return false;
+			return true;
 		}
 		this.appData.put(name, Integer.parseInt(state));
 		return true;
@@ -88,6 +90,8 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 	public boolean execute(Request request, boolean doNotReplyToClient) {
 		//AppRequest req = (AppRequest) request;
 		//String name = req.getServiceName();
+		
+		System.out.println(this+" starts to execute request "+request);
 		if (request.toString().equals(Request.NO_OP)){
 			return true;
 		}
