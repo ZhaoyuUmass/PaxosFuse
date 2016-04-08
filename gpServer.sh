@@ -4,7 +4,7 @@ HEAD=`dirname $0`
 CLASSPATH=$CLASSPATH:`ls $HEAD/jar/fuse.jar`
 LOG_PROPERTIES=logging.properties
 LOG4J_PROPERTIES=log4j.properties
-GP_PROPERTIES=gigapaxos.properties
+GP_PROPERTIES=gigapaxos.local.properties
 
 JAVA=java
 JVMFLAGS="-ea -Djava.util.logging.config.file=$LOG_PROPERTIES \

@@ -1,7 +1,6 @@
 package exercise;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.Set;
 
 import org.json.JSONException;
@@ -22,12 +21,14 @@ import edu.umass.cs.reconfiguration.reconfigurationutils.RequestParseException;
  */
 public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 	
-	static int TOTAL_REQUEST = 0;
-	synchronized static void updateTotalRequest(){
-		TOTAL_REQUEST++;
-	}
-	synchronized static int getTotalRequest(){
-		return TOTAL_REQUEST;
+	static int NORMAL_REQUEST = 0;
+	static int ERROR_REQUEST = 0;
+	synchronized static void updateTotalRequest(Request request){
+		if(request.getRequestType() != AppRequest.PacketType.DEFAULT_APP_REQUEST){
+			ERROR_REQUEST++;
+		} else{
+			NORMAL_REQUEST++;
+		}
 	}
 	
 	/**
@@ -41,10 +42,20 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 
 		@Override
 		public void handleResponse(Request request) {
-			System.out.println(request);
-			NumNoopAppClient.updateTotalRequest();
+			System.out.println("After stop received: "+request+" "+request.getRequestType()+" "+request.getClass());
+			NumNoopAppClient.updateTotalRequest(request);
 		}
 		
+	}
+	
+	private static void sendRequestAfterStop(NumNoopAppClient client, String name) throws IOException{
+		for (String activeName:PaxosConfig.getActives().keySet()) {
+			System.out.println("Active: "+activeName);
+			client.sendRequest(new AppRequest(name, "1",
+				AppRequest.PacketType.DEFAULT_APP_REQUEST, false), 
+				PaxosConfig.getActives().get(activeName), 
+				new Callback());
+		}
 	}
 	
 	private static void sendTestReqeust(NumNoopAppClient client, String name) throws IOException{
@@ -55,19 +66,24 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 					public void handleResponse(Request response) {
 						// TODO Auto-generated method stub
 						System.out.println("The response is " +response);
+						
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+						try {
+							sendRequestAfterStop(client, name);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 			
 				});
 		
-		/*
-		for (String activeName:PaxosConfig.getActives().keySet()) {
-			System.out.println("Active: "+activeName);
-			client.sendRequest(new AppRequest(name, "1",
-				AppRequest.PacketType.DEFAULT_APP_REQUEST, false), 
-				PaxosConfig.getActives().get(activeName), 
-				new Callback());
-		}
-		*/
 	}
 	
 	@Override
@@ -85,7 +101,7 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 		return NoopApp.staticGetRequestTypes();
 	}
 	
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException, InterruptedException{
 		final NumNoopAppClient client = new NumNoopAppClient();
 		String namePrefix = "some_name";
 		final String name = namePrefix+0;
@@ -104,9 +120,16 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 					}
 				});
 		
-		System.out.println("Service "+name+" has been created ...");
+		Thread.sleep(2000);
 		
+		while(NORMAL_REQUEST <2 && ERROR_REQUEST<1){
+			Thread.sleep(1000);
+		}
+		assert(NORMAL_REQUEST==2);
+		assert(ERROR_REQUEST==1);
 		
+		System.out.println("Experiment is done, reconfiguration acts as expected!");
 		
+		System.exit(0);
 	}
 }
