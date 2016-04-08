@@ -36,7 +36,7 @@ fi
 function start_server {
 
   $JAVA $JVMFLAGS $SSL_OPTIONS \
-edu.umass.cs.reconfiguration.ReconfigurableNode "$@"
+edu.umass.cs.reconfiguration.ReconfigurableNode "$@"&
 
 }
 
