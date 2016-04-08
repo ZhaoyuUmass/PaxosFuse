@@ -23,11 +23,14 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	private final static String SERVICE_NAME = "service_name";
 	private final static String NUM_REQUEST = "num_request";
 	
-	private final static int NUM_ACTIVE = PaxosConfig.getActives().keySet().size();
-	private  static int replicaToShutdown = 0;
+	private final static int NUM_REPLICAS = 3;
+	
+	
 	
 	private Integer numReq = 0;
 	private NumNoopProfile lastReconfiguredProfile = null;
+	
+	private NumNoopFakeLatency latencyMap = new NumNoopFakeLatency();
 	
 	/**
 	 * @param name
@@ -99,23 +102,15 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	@Override
 	public ArrayList<InetAddress> shouldReconfigure(ArrayList<InetAddress> curActives, InterfaceGetActiveIPs nodeConfig) {
 		ArrayList<InetAddress> reconfiguredAddresses = new ArrayList<InetAddress>();
-		String nameToShutdown = asSortedList().get(replicaToShutdown);
-		
-		System.out.println(asSortedList()+" "+asSortedList().get(replicaToShutdown));
-		for (String name:PaxosConfig.getActives().keySet()){
-			if(name.equals(nameToShutdown)){
-				// If it's the node to shutdown, then skip it
-				continue;
-			}
-			InetSocketAddress socketAddress = PaxosConfig.getActives().get(name);
-			InetAddress address = socketAddress.getAddress();
-			reconfiguredAddresses.add(address);
+		ArrayList<String> names = this.latencyMap.getTopK(NUM_REPLICAS);
+		System.out.println("Closest names are "+names);
+		for (String name:names){
+			reconfiguredAddresses.add(PaxosConfig.getActives().get(name).getAddress());
 		}
-		
-		replicaToShutdown = (replicaToShutdown+1)%NUM_ACTIVE;
 		
 		System.out.println("reconfigured address set is "+reconfiguredAddresses);
 		
+		latencyMap.reset();
 		return reconfiguredAddresses;
 	}
 

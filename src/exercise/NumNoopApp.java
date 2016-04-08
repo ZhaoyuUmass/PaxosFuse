@@ -1,5 +1,9 @@
 package exercise;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -26,14 +30,38 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 	implements Replicable, Reconfigurable, ClientMessenger {
 	
 	private final HashMap<String, Integer> appData = new HashMap<String, Integer>();	
+	private static final String file_name = "a.txt";
 	
+	
+	protected static boolean updateFile(String content){
+		try {
+			FileOutputStream fis = new FileOutputStream(file_name);
+			fis.write(content.getBytes());
+			fis.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
+	}
+	
+	protected static void deleteFile(){
+		File file = new File(file_name);
+		if(file.exists()){
+			file.delete();
+		}
+	}
 	
 	private boolean processRequest(AppRequest request,
 			boolean doNotReplyToClient) {
 		if (request.getServiceName() == null)
 			return true; // no-op
-		if (request.isStop())
+		if (request.isStop()){
+			deleteFile();
 			return true;
+		}
 		
 		String name = request.getServiceName();
 		int value = Integer.parseInt(request.getValue());
@@ -44,6 +72,7 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 			appData.put(name, 0);
 		}
 		
+		updateFile(appData.get(name).toString());
 		//System.out.println("Value is "+appData.get(name));
 		this.sendResponse(request);
 		return true;
@@ -63,6 +92,8 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 			return true;
 		}
 		this.appData.put(name, Integer.parseInt(state));
+		updateFile(state);
+		
 		return true;
 	}
 
