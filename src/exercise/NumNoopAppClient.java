@@ -106,6 +106,7 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 		String namePrefix = "some_name";
 		final String name = namePrefix+0;
 		
+		System.out.println("Actives are :"+PaxosConfig.getActives());
 		client.sendRequest(new CreateServiceName(name, "0"),
 				new RequestCallback() {
 
