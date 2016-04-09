@@ -53,8 +53,6 @@ public class NumNoopFakeLatency {
 			i++;
 		}
 		
-		System.out.println(latencies);
-		
 	}
 	
 	protected ArrayList<String> getClosest(String client){

@@ -120,7 +120,7 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 		//AppRequest req = (AppRequest) request;
 		//String name = req.getServiceName();
 		
-		System.out.println(this+" starts to execute request "+request);
+		//System.out.println(this+" starts to execute request "+request);
 		if (request.toString().equals(Request.NO_OP)){
 			return true;
 		}

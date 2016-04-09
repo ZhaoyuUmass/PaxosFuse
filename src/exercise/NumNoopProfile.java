@@ -23,7 +23,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	private final static String SERVICE_NAME = "service_name";
 	private final static String NUM_REQUEST = "num_request";
 		
-	private Integer numReq = 0;
+	private static Integer numReq = 0;
 	private NumNoopProfile lastReconfiguredProfile = null;
 	
 	private NumNoopFakeLatency latMap = new NumNoopFakeLatency();
@@ -110,7 +110,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	public ArrayList<InetAddress> shouldReconfigure(ArrayList<InetAddress> curActives, InterfaceGetActiveIPs nodeConfig) {
 		ArrayList<InetAddress> reconfiguredAddresses = new ArrayList<InetAddress>();
 		ArrayList<String> names = latMap.getClosest(mostAcitveRegion);
-
+		
 		System.out.println("Closest names are "+names);
 		for (String name:names){
 			reconfiguredAddresses.add(PaxosConfig.getActives().get(name).getAddress());
@@ -125,7 +125,9 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	@Override
 	public boolean shouldReport() {		
 		numReq++;
+		System.out.println(this+"Recived "+numReq+" requests");
 		if(numReq >= REPORT_EVERY_FEW_REQUEST ){
+			
 			numReq = 0;
 			return true;
 		}
