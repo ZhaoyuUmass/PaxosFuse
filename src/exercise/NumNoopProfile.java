@@ -52,37 +52,37 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		return new NumNoopProfile(this);	
 	}
 
-	@Override
-	public void combine(AbstractDemandProfile dp) {
-		System.out.println(dp.getName());
-		NumNoopProfile update = (NumNoopProfile) dp;
-		System.out.println(update.getName()+" "+update.numReq);
-		this.numReq = Math.max(update.numReq, this.numReq);
-		System.out.println("The largest #reqs is "+this.numReq);
-	}
-
 	/**
 	 * @param json
 	 * @throws JSONException
 	 */
 	public NumNoopProfile(JSONObject json) throws JSONException {
 		super(json.getString(SERVICE_NAME));
-		this.numReq =json.getInt(NUM_REQUEST);
+		this.numReq = this.numReq + json.getInt(NUM_REQUEST);
 		this.mostActiveRegion = json.getString(HOST);
 	}
+	
+	
+	@Override
+	public void combine(AbstractDemandProfile dp) {
+		NumNoopProfile update = (NumNoopProfile) dp;
+		this.numReq = update.numReq + this.numReq;
+		System.out.println("Coordinator combines "+this.numReq+"requests.");	
+	}
+
+
 	
 	@Override
 	public JSONObject getStats() {
 		JSONObject json = new JSONObject();
 		try {
 			json.put(SERVICE_NAME, this.name);
-			json.put(NUM_REQUEST, REPORT_EVERY_FEW_REQUEST);
+			json.put(NUM_REQUEST, 1);
 			json.put(HOST, mostActiveRegion);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(json.toString());
+		System.out.println("getStats:"+json.toString());
 		return json;
 	}
 
@@ -120,29 +120,37 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	
 	@Override
 	public ArrayList<InetAddress> shouldReconfigure(ArrayList<InetAddress> curActives, InterfaceGetActiveIPs nodeConfig) {
-		ArrayList<InetAddress> reconfiguredAddresses = new ArrayList<InetAddress>();
-		System.out.println("The most active region is "+mostActiveRegion);
-		
-		ArrayList<String> names = latMap.getClosest(mostActiveRegion);
-		
-		System.out.println("Closest names are "+names);
-		for (String name:names){
-			reconfiguredAddresses.add(PaxosConfig.getActives().get(name).getAddress());
+		if(numReq > REPORT_EVERY_FEW_REQUEST){
+			ArrayList<InetAddress> reconfiguredAddresses = new ArrayList<InetAddress>();
+			System.out.println("The most active region is "+mostActiveRegion);
+			
+			ArrayList<String> names = latMap.getClosest(mostActiveRegion);
+			
+			System.out.println("Closest names are "+names);
+			for (String name:names){
+				reconfiguredAddresses.add(PaxosConfig.getActives().get(name).getAddress());
+			}
+			
+			System.out.println("reconfigured address set is "+reconfiguredAddresses);
+			
+			numReq = 0;
+			
+			return reconfiguredAddresses;
+		}else{
+			return null;
 		}
-		
-		System.out.println("reconfigured address set is "+reconfiguredAddresses);
-		
-		
-		return reconfiguredAddresses;
 	}
 
 	@Override
-	public boolean shouldReport() {		
+	public boolean shouldReport() {	
+		/*
 		if(numReq >= REPORT_EVERY_FEW_REQUEST ){			
 			numReq = 0;
 			return true;
 		}
 		return false;
+		*/
+		return true;
 	}
 	
 	protected static List<String> asSortedList() {
