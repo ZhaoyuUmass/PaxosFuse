@@ -19,7 +19,7 @@ import edu.umass.cs.reconfiguration.reconfigurationutils.InterfaceGetActiveIPs;
  *
  */
 public class NumNoopProfile extends AbstractDemandProfile{
-	private final static int REPORT_EVERY_FEW_REQUEST = 1;
+	private final static int REPORT_EVERY_FEW_REQUEST = 20;
 	private final static String SERVICE_NAME = "service_name";
 	private final static String NUM_REQUEST = "num_request";
 	
@@ -30,7 +30,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	private Integer numReq = 0;
 	private NumNoopProfile lastReconfiguredProfile = null;
 	
-	private NumNoopFakeLatency latencyMap = new NumNoopFakeLatency();
+	//private NumNoopFakeLatency latencyMap = new NumNoopFakeLatency();
 	
 	/**
 	 * @param name
@@ -102,7 +102,8 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	@Override
 	public ArrayList<InetAddress> shouldReconfigure(ArrayList<InetAddress> curActives, InterfaceGetActiveIPs nodeConfig) {
 		ArrayList<InetAddress> reconfiguredAddresses = new ArrayList<InetAddress>();
-		ArrayList<String> names = this.latencyMap.getTopK(NUM_REPLICAS);
+		ArrayList<String> names = null;
+		
 		System.out.println("Closest names are "+names);
 		for (String name:names){
 			reconfiguredAddresses.add(PaxosConfig.getActives().get(name).getAddress());
@@ -110,7 +111,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		
 		System.out.println("reconfigured address set is "+reconfiguredAddresses);
 		
-		latencyMap.reset();
+		
 		return reconfiguredAddresses;
 	}
 
