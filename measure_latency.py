@@ -45,7 +45,7 @@ def main():
             arr.append(p)
             eclapsed = time.time() - start
             time.sleep(1)
-        fout.write(str(sum(arr)/len(sum))+" ")
+        fout.write(str(sum(arr)/len(arr))+" ")
     fout.close()
 
 
