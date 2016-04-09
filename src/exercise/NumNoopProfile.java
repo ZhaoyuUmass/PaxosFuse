@@ -19,7 +19,7 @@ import edu.umass.cs.reconfiguration.reconfigurationutils.InterfaceGetActiveIPs;
  *
  */
 public class NumNoopProfile extends AbstractDemandProfile{
-	private final static int REPORT_EVERY_FEW_REQUEST = 5;
+	private final static int REPORT_EVERY_FEW_REQUEST = 20;
 	private final static String SERVICE_NAME = "service_name";
 	private final static String NUM_REQUEST = "num_request";
 	private final static String HOST = "host";
