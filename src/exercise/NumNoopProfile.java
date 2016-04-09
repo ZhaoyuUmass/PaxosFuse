@@ -103,7 +103,11 @@ public class NumNoopProfile extends AbstractDemandProfile{
 			mostActiveRegion = host;
 			numReq = 0;	
 			
+		}else{
+			numReq++;
+			System.out.println(this+" Recived "+numReq+" requests");
 		}
+		
 		System.out.println("register"+request+" "+host);
 		
 	}
@@ -111,6 +115,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	@Override
 	public void reset() {
 		numReq = 0;
+		mostActiveRegion = null;
 	}
 	
 	@Override
@@ -133,8 +138,6 @@ public class NumNoopProfile extends AbstractDemandProfile{
 
 	@Override
 	public boolean shouldReport() {		
-		numReq++;
-		System.out.println(this+"Recived "+numReq+" requests");
 		if(numReq >= REPORT_EVERY_FEW_REQUEST ){			
 			numReq = 0;
 			return true;
