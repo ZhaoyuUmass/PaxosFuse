@@ -46,7 +46,7 @@ public class NumNoopGeoClient extends ReconfigurableAppClientAsync{
 		public void handleResponse(Request request) {
 			long eclapsed = System.currentTimeMillis() - this.initTime;
 			updateLatency(eclapsed);
-			System.out.println("Latency:"+eclapsed+"ms");
+			System.out.println("Latency of request"+received +":"+eclapsed+"ms");
 			if(received < NUM_REQ){
 				sendRequest();
 			}
