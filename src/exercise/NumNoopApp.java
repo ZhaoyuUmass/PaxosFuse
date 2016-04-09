@@ -54,6 +54,8 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 	
 	private boolean processRequest(AppRequest request,
 			boolean doNotReplyToClient) {
+		
+		this.sendResponse(request);
 		if (request.getServiceName() == null)
 			return true; // no-op
 		if (request.isStop()){
@@ -69,10 +71,7 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 		} else{
 			appData.put(name, 0);
 		}
-		
-		//updateFile(appData.get(name).toString());
-		//System.out.println("Value is "+appData.get(name));
-		this.sendResponse(request);
+				
 		return true;
 	}
 
