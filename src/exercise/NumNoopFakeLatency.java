@@ -1,8 +1,11 @@
 package exercise;
 
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 import edu.umass.cs.gigapaxos.PaxosConfig;
 
@@ -11,61 +14,82 @@ import edu.umass.cs.gigapaxos.PaxosConfig;
  *
  */
 public class NumNoopFakeLatency {
-	private static HashMap<String, Integer> latencies = new HashMap<String, Integer>();
-	private Random rand = new Random();
+	private static HashMap<String, HashMap<String, Double>> latencies = new HashMap<String, HashMap<String, Double>>();
+	private final static double DEFAULT_HIGHEST_LATENCY = 500;	
 	
-	private final static int MAX_LATENCY = 100;
+	private static HashMap<InetAddress, String> addressToName = new HashMap<InetAddress, String>();
 	
-	protected NumNoopFakeLatency(){
-		reset();
+	protected NumNoopFakeLatency() {
+		for (String name:PaxosConfig.getActives().keySet()){
+			latencies.put(name, new HashMap<String, Double>());
+			addressToName.put(PaxosConfig.getActives().get(name).getAddress(), name);
+		}
+		
+		
+		StringBuilder builder = new StringBuilder();
+		FileInputStream fis = null;
+		try{
+			fis = new FileInputStream("table");		
+			int ch;
+			while((ch = fis.read()) != -1){
+			    builder.append((char)ch);
+			}
+			fis.close();
+		} catch(IOException e){
+			e.printStackTrace();
+		}
+		
+		String lat = builder.toString();
+		String[] lats = lat.split("\n");
+				
+		int i = 0;
+		for (String client:PaxosConfig.getActives().keySet()){
+			int j = 0;
+			for (String name:PaxosConfig.getActives().keySet()){
+				String[] l = lats[i].split(" ");
+				latencies.get(client).put(name, Double.parseDouble(l[j]));
+				j++;
+			}
+			i++;
+		}
+		
+		System.out.println(latencies);
+		
 	}
 	
-	protected ArrayList<String> getTopK(int k){
+	protected ArrayList<String> getClosest(String client){
 		ArrayList<String> names = new ArrayList<String>();
-		int thres = MAX_LATENCY;
-		for(String name:NumNoopFakeLatency.latencies.keySet()){
-			if(names.size()<k){
-				int pos = 0;
-				for (String m:names){
-					if(latencies.get(m) > latencies.get(name)){
-						break;
-					}
-					pos++;
-				}
-				names.add(pos, name);
-				int lat = latencies.get(name);
-				if(lat < thres){
-					thres = lat;
-				}
-			}else{
-				int lat = latencies.get(name);
-				if(lat >= thres){
-					continue;
-				} else{
-					// pop one name out, and insert this one
-					int pos = 0;
-					for(String m:names){						
-						if (latencies.get(m) > latencies.get(name) ){
-							break;
-						}
-						pos++;
-					}
-					names.remove(names.size()-1);					
-					names.add(pos, name);
-					
-				}
+		names.add(client);
+		HashMap<String, Double> lats = latencies.get(client);
+		
+		double lowest = DEFAULT_HIGHEST_LATENCY;
+		String closest = null;
+		for(String name:lats.keySet()){
+			if(name.equals(client)){
+				continue;
 			}
-			System.out.println("getTopK:"+names+" "+name);
+			double lat = lats.get(name);
+			if( lat < lowest){
+				lowest = lat;
+				closest = name;
+			}
 		}
+		assert(closest != null);
+		names.add(closest);
+		
 		return names;
 	}
 	
 	
-	protected void reset(){
-		latencies.clear();
-		for (String name:PaxosConfig.getActives().keySet()){
-			latencies.put(name, rand.nextInt(MAX_LATENCY));
-		}
-		System.out.println(""+latencies);
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args){
+		NumNoopFakeLatency policy = new NumNoopFakeLatency();
+		System.out.println(policy.getClosest("100"));
+		System.out.println(policy.getClosest("101"));
+		System.out.println(policy.getClosest("102"));
+		System.out.println(policy.getClosest("103"));
+		System.out.println(policy.getClosest("104"));
 	}
 }

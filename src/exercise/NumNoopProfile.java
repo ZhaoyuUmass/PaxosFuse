@@ -1,7 +1,6 @@
 package exercise;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,6 +10,7 @@ import org.json.JSONObject;
 
 import edu.umass.cs.gigapaxos.PaxosConfig;
 import edu.umass.cs.gigapaxos.interfaces.Request;
+import edu.umass.cs.reconfiguration.examples.AppRequest;
 import edu.umass.cs.reconfiguration.reconfigurationutils.AbstractDemandProfile;
 import edu.umass.cs.reconfiguration.reconfigurationutils.InterfaceGetActiveIPs;
 
@@ -22,15 +22,13 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	private final static int REPORT_EVERY_FEW_REQUEST = 20;
 	private final static String SERVICE_NAME = "service_name";
 	private final static String NUM_REQUEST = "num_request";
-	
-	private final static int NUM_REPLICAS = 3;
-	
-	
-	
+		
 	private Integer numReq = 0;
 	private NumNoopProfile lastReconfiguredProfile = null;
 	
-	//private NumNoopFakeLatency latencyMap = new NumNoopFakeLatency();
+	private NumNoopFakeLatency latMap = new NumNoopFakeLatency();
+	private static String mostAcitveRegion = null;
+	
 	
 	/**
 	 * @param name
@@ -91,7 +89,12 @@ public class NumNoopProfile extends AbstractDemandProfile{
 
 	@Override
 	public void register(Request request, InetAddress sender, InterfaceGetActiveIPs nodeConfig) {
-		System.out.println("register"+request+" "+sender+" "+nodeConfig);
+		
+		AppRequest req = (AppRequest) request;
+		String host = req.getValue();
+		mostAcitveRegion = host;
+		System.out.println("register"+request+" "+host);
+		
 	}
 
 	@Override
@@ -102,8 +105,8 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	@Override
 	public ArrayList<InetAddress> shouldReconfigure(ArrayList<InetAddress> curActives, InterfaceGetActiveIPs nodeConfig) {
 		ArrayList<InetAddress> reconfiguredAddresses = new ArrayList<InetAddress>();
-		ArrayList<String> names = null;
-		
+		ArrayList<String> names = latMap.getClosest(mostAcitveRegion);
+
 		System.out.println("Closest names are "+names);
 		for (String name:names){
 			reconfiguredAddresses.add(PaxosConfig.getActives().get(name).getAddress());
@@ -116,8 +119,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	}
 
 	@Override
-	public boolean shouldReport() {
-		
+	public boolean shouldReport() {		
 		numReq++;
 		if(numReq % REPORT_EVERY_FEW_REQUEST == 0){
 			return true;
