@@ -58,9 +58,11 @@ public class NumNoopGeoClient extends ReconfigurableAppClientAsync{
 	protected static class Callback implements RequestCallback{
 		
 		private long initTime;
+		private Object obj;
 		
-		Callback(long initTime){
+		Callback(long initTime, Object obj){
 			this.initTime = initTime;
+			this.obj = obj;
 		}
 		
 		@Override
@@ -71,12 +73,15 @@ public class NumNoopGeoClient extends ReconfigurableAppClientAsync{
 			if(request.getRequestType() != AppRequest.PacketType.DEFAULT_APP_REQUEST){
 				System.out.println(request);
 			}
-			
+			synchronized(obj){
+				obj.notify();
+			}
 		}
 		
 	}
 	
 	private static class requestRunnable implements Callable<Boolean>{
+		Object obj = new Object();
 		
 		@Override
 		public Boolean call() throws Exception {
@@ -84,9 +89,12 @@ public class NumNoopGeoClient extends ReconfigurableAppClientAsync{
 				System.out.println("Send request "+received);
 				client.sendRequest(new AppRequest(serviceName, HOST_NAME,
 						AppRequest.PacketType.DEFAULT_APP_REQUEST, false)
-						, new Callback(System.currentTimeMillis()));
+						, new Callback(System.currentTimeMillis(), obj));
 			} catch (IOException e) {
 				e.printStackTrace();
+			}
+			synchronized(obj){
+				obj.wait();
 			}
 			return true;
 		}
@@ -136,6 +144,7 @@ public class NumNoopGeoClient extends ReconfigurableAppClientAsync{
 		assert(HOST_NAME != null);
 		
 		client = new NumNoopGeoClient();
+		executorPool.prestartAllCoreThreads();
 		
 		while (received < NUM_REQ){
 			Future<Boolean> future = executorPool.submit(new requestRunnable());
@@ -151,9 +160,9 @@ public class NumNoopGeoClient extends ReconfigurableAppClientAsync{
 			}
 		} 
 		
-		System.out.println("Sent "+NUM_REQ+" requests, received "+(received-timeout)+" requests and "+ timeout 
+		System.out.println("Sent "+NUM_REQ+" requests, received "+(received-timeout)+" requests and "+ timeout + " requests timed out"
 				+ ". The average latency is "+totalLatency/received+"ms");
-		System.exit(0);
+		
 	}
 
 	@Override
