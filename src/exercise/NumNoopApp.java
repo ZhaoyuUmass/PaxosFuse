@@ -59,19 +59,22 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 		if (request.getServiceName() == null)
 			return true; // no-op
 		if (request.isStop()){
-			//deleteFile();
+			System.out.println(this+": received stop msg "+request);
 			return true;
 		}
+		
+		System.out.println(this+": received AppRequest "+request);
 		
 		String name = request.getServiceName();
 		int value = Integer.parseInt(request.getValue());
 		
 		if (appData.containsKey(name)){
 			appData.put(name, appData.get(name)+value);
-		} else{
+		} else {
 			appData.put(name, 0);
 		}
-				
+		
+		System.out.println(this+": execution is done for AppRequest "+request);	
 		return true;
 	}
 
@@ -79,7 +82,8 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 	@Override
 	public String checkpoint(String name) {
 		System.out.println("checkpoint: "+name);
-		return this.appData.get(name).toString();
+		assert(this.appData.containsKey(name));
+		return this.appData.remove(name).toString();
 	}
 
 	@Override
@@ -89,7 +93,7 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 			return true;
 		}
 		this.appData.put(name, Integer.parseInt(state));
-		//updateFile(state);
+		System.out.println(this+": restore state has been restored "+state);
 		
 		return true;
 	}
@@ -116,10 +120,6 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 	
 	@Override
 	public boolean execute(Request request, boolean doNotReplyToClient) {
-		//AppRequest req = (AppRequest) request;
-		//String name = req.getServiceName();
-		
-		//System.out.println(this+" starts to execute request "+request);
 		if (request.toString().equals(Request.NO_OP)){
 			return true;
 		}
@@ -130,7 +130,7 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 		default:
 			break;
 		}		
-		
+		System.out.println("The demo program should never come here!");
 		return false;
 	}
 	
