@@ -66,7 +66,12 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	@Override
 	public void combine(AbstractDemandProfile dp) {
 		NumNoopProfile update = (NumNoopProfile) dp;
-		this.numReq = update.numReq + this.numReq;
+		if(update.mostActiveRegion.equals(this.mostActiveRegion)){
+			this.numReq = update.numReq + this.numReq;
+		} else {
+			this.mostActiveRegion = update.mostActiveRegion;
+			this.numReq = update.numReq;
+		}
 		System.out.println("Coordinator combines "+this.numReq+"requests.");	
 	}
 
