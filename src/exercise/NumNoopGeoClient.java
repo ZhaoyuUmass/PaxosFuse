@@ -56,6 +56,7 @@ public class NumNoopGeoClient extends ReconfigurableAppClientAsync{
 	
 	private static void sendRequest(){
 		try {
+			System.out.println("Send request "+received);
 			client.sendRequest(new AppRequest(serviceName, HOST_NAME,
 					AppRequest.PacketType.DEFAULT_APP_REQUEST, false)
 					, new Callback(System.currentTimeMillis()));
