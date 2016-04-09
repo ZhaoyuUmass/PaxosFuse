@@ -121,7 +121,8 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	@Override
 	public boolean shouldReport() {		
 		numReq++;
-		if(numReq % REPORT_EVERY_FEW_REQUEST == 0){
+		if(numReq >= REPORT_EVERY_FEW_REQUEST ){
+			numReq = 0;
 			return true;
 		}
 		return false;

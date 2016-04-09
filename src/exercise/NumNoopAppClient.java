@@ -51,7 +51,7 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 	private static void sendRequestAfterStop(NumNoopAppClient client, String name) throws IOException{
 		for (String activeName:PaxosConfig.getActives().keySet()) {
 			System.out.println("Active: "+activeName);
-			client.sendRequest(new AppRequest(name, "1",
+			client.sendRequest(new AppRequest(name, "100",
 				AppRequest.PacketType.DEFAULT_APP_REQUEST, false), 
 				PaxosConfig.getActives().get(activeName), 
 				new Callback());
@@ -59,12 +59,11 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 	}
 	
 	private static void sendTestReqeust(NumNoopAppClient client, String name) throws IOException{
-		client.sendRequest(new AppRequest(name, "1",
+		client.sendRequest(new AppRequest(name, "100",
 				AppRequest.PacketType.DEFAULT_APP_REQUEST, false), 
 				new RequestCallback(){
 					@Override
 					public void handleResponse(Request response) {
-						// TODO Auto-generated method stub
 						System.out.println("The response is " +response);
 						
 						try {
@@ -73,13 +72,14 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						
+						/*
 						try {
 							sendRequestAfterStop(client, name);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						*/
 					}
 			
 				});
