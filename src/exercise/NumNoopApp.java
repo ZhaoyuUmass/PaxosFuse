@@ -81,18 +81,23 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 	
 	@Override
 	public String checkpoint(String name) {
-		System.out.println("checkpoint: "+name);
-		assert(this.appData.containsKey(name));
-		return this.appData.remove(name).toString();
+		Integer data = this.appData.get(name);
+		return data != null? data.toString() : null;
 	}
 
 	@Override
 	public boolean restore(String name, String state) {
 		System.out.println(this+":restore "+name+" "+state);
-		if(state == null){
-			return true;
+		Integer data = appData.get(name);
+		
+		if(state != null){
+			this.appData.put(name, Integer.parseInt(state));
+		} else if (data != null){
+			appData.remove(name);
+		} else {
+			// do nothing 
 		}
-		this.appData.put(name, Integer.parseInt(state));
+		
 		System.out.println(this+": restore state has been restored "+state);
 		
 		return true;
