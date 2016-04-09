@@ -59,7 +59,7 @@ public class NumNoopFakeLatency {
 		ArrayList<String> names = new ArrayList<String>();
 		names.add(client);
 		HashMap<String, Double> lats = latencies.get(client);
-		
+		System.out.println(this.getClass().getSimpleName()+" getClosest "+lats+" "+client);
 		double lowest = DEFAULT_HIGHEST_LATENCY;
 		String closest = null;
 		for(String name:lats.keySet()){
