@@ -3,6 +3,14 @@ package exercise;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.json.JSONException;
 
@@ -25,16 +33,29 @@ public class NumNoopGeoClient extends ReconfigurableAppClientAsync{
 	private static String HOST_NAME = null;
 	private final static String namePrefix = "some_name";
 	private final static String serviceName = namePrefix+0;
-	private static NumNoopGeoClient client;
+	private final static int NUM_THREAD = 10;
+	private final static int TIMEOUT = 1000;
+	
+	private static NumNoopGeoClient client;	
+	private static ThreadPoolExecutor executorPool = new ThreadPoolExecutor(NUM_THREAD, NUM_THREAD, 0, TimeUnit.SECONDS, 
+    		new LinkedBlockingQueue<Runnable>(), new MyThreadFactory());
 	
 	static long totalLatency = 0;
 	static int received = 0;
+	static int timeout = 0;
 	static synchronized void updateLatency(long latency){
 		totalLatency += latency;
-		received++;
 	}
 	
-	private static class Callback implements RequestCallback{
+	 static class MyThreadFactory implements ThreadFactory {
+	    	
+	    	public Thread newThread(Runnable r) {
+	    		Thread t = new Thread(r);
+	    	    return t;
+	    	}
+	    }
+	
+	protected static class Callback implements RequestCallback{
 		
 		private long initTime;
 		
@@ -50,28 +71,29 @@ public class NumNoopGeoClient extends ReconfigurableAppClientAsync{
 			if(request.getRequestType() != AppRequest.PacketType.DEFAULT_APP_REQUEST){
 				System.out.println(request);
 			}
-			try{
-				Thread.sleep(1000);
-			}catch (InterruptedException e){
-				e.printStackTrace();
-			}
-			if(received < NUM_REQ){
-				sendRequest();
-			}
+			
 		}
 		
 	}
 	
-	private static void sendRequest(){
-		try {
-			System.out.println("Send request "+received);
-			client.sendRequest(new AppRequest(serviceName, HOST_NAME,
-					AppRequest.PacketType.DEFAULT_APP_REQUEST, false)
-					, new Callback(System.currentTimeMillis()));
-		} catch (IOException e) {
-			e.printStackTrace();
+	private static class requestRunnable implements Callable<Boolean>{
+		
+		@Override
+		public Boolean call() throws Exception {
+			try {
+				System.out.println("Send request "+received);
+				client.sendRequest(new AppRequest(serviceName, HOST_NAME,
+						AppRequest.PacketType.DEFAULT_APP_REQUEST, false)
+						, new Callback(System.currentTimeMillis()));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return true;
 		}
+		
 	}
+	
+
 	
 	/**
 	 * @throws IOException
@@ -115,18 +137,22 @@ public class NumNoopGeoClient extends ReconfigurableAppClientAsync{
 		
 		client = new NumNoopGeoClient();
 		
-		if (NUM_REQ > 0){
-			sendRequest();
-		} else{
-			System.out.println("You send no requests.");
-			System.exit(0);
-		}
+		while (received < NUM_REQ){
+			Future<Boolean> future = executorPool.submit(new requestRunnable());
+			try {
+				boolean rcvd = future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+				if(rcvd){
+					received++;
+				}
+			} catch (ExecutionException | TimeoutException e) {
+				received++;
+				timeout++;
+				e.printStackTrace();
+			}
+		} 
 		
-		while(received < NUM_REQ){
-			Thread.sleep(1000);
-		}
-		
-		System.out.println("Sent "+NUM_REQ+" requests, and received "+received+" requests. The average latency is "+totalLatency/received+"ms");
+		System.out.println("Sent "+NUM_REQ+" requests, received "+(received-timeout)+" requests and "+ timeout 
+				+ ". The average latency is "+totalLatency/received+"ms");
 		System.exit(0);
 	}
 

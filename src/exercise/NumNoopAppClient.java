@@ -26,7 +26,7 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 	synchronized static void updateTotalRequest(Request request){
 		if(request.getRequestType() != AppRequest.PacketType.DEFAULT_APP_REQUEST){
 			ERROR_REQUEST++;
-		} else{
+		} else {
 			NORMAL_REQUEST++;
 		}
 	}
