@@ -96,10 +96,14 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		
 		AppRequest req = (AppRequest) request;
 		String host = req.getValue();
-		if(!mostAcitveRegion.equals(name)){
+		if(mostAcitveRegion == null ){
 			mostAcitveRegion = host;
 			numReq = 0;
-		} 
+		} else if(!mostAcitveRegion.equals(host)){
+			mostAcitveRegion = host;
+			numReq = 0;	
+			
+		}
 		System.out.println("register"+request+" "+host);
 		
 	}
