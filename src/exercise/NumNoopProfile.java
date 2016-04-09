@@ -22,12 +22,13 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	private final static int REPORT_EVERY_FEW_REQUEST = 20;
 	private final static String SERVICE_NAME = "service_name";
 	private final static String NUM_REQUEST = "num_request";
-		
+	private final static String HOST = "host";
+	
 	private Integer numReq = 0;
 	private NumNoopProfile lastReconfiguredProfile = null;
 	
 	private NumNoopFakeLatency latMap = new NumNoopFakeLatency();
-	private static String mostAcitveRegion = null;
+	private String mostActiveRegion = null;
 	
 	
 	/**
@@ -35,7 +36,6 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	 */
 	public NumNoopProfile(String name) {
 		super(name);
-		latMap = new NumNoopFakeLatency();
 	}
 	
 	/**
@@ -44,12 +44,11 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	public NumNoopProfile(NumNoopProfile nnp) {
 		super(nnp.name);
 		this.numReq = nnp.numReq;
-		latMap = new NumNoopFakeLatency();
+		this.mostActiveRegion = nnp.mostActiveRegion;
 	}
 
 	@Override
 	public NumNoopProfile clone() {
-		latMap = new NumNoopFakeLatency();
 		return new NumNoopProfile(this);	
 	}
 
@@ -69,7 +68,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	public NumNoopProfile(JSONObject json) throws JSONException {
 		super(json.getString(SERVICE_NAME));
 		this.numReq =json.getInt(NUM_REQUEST);
-		latMap = new NumNoopFakeLatency();
+		this.mostActiveRegion = json.getString(HOST);
 	}
 	
 	@Override
@@ -78,6 +77,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		try {
 			json.put(SERVICE_NAME, this.name);
 			json.put(NUM_REQUEST, REPORT_EVERY_FEW_REQUEST);
+			json.put(HOST, mostActiveRegion);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -96,11 +96,11 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		
 		AppRequest req = (AppRequest) request;
 		String host = req.getValue();
-		if(mostAcitveRegion == null ){
-			mostAcitveRegion = host;
+		if(mostActiveRegion == null ){
+			mostActiveRegion = host;
 			numReq = 0;
-		} else if(!mostAcitveRegion.equals(host)){
-			mostAcitveRegion = host;
+		} else if(!mostActiveRegion.equals(host)){
+			mostActiveRegion = host;
 			numReq = 0;	
 			
 		}
@@ -116,9 +116,9 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	@Override
 	public ArrayList<InetAddress> shouldReconfigure(ArrayList<InetAddress> curActives, InterfaceGetActiveIPs nodeConfig) {
 		ArrayList<InetAddress> reconfiguredAddresses = new ArrayList<InetAddress>();
-		System.out.println("The most active region is "+mostAcitveRegion);
+		System.out.println("The most active region is "+mostActiveRegion);
 		
-		ArrayList<String> names = latMap.getClosest(mostAcitveRegion);
+		ArrayList<String> names = latMap.getClosest(mostActiveRegion);
 		
 		System.out.println("Closest names are "+names);
 		for (String name:names){
