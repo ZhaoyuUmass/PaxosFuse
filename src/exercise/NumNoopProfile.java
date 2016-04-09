@@ -35,6 +35,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	 */
 	public NumNoopProfile(String name) {
 		super(name);
+		latMap = new NumNoopFakeLatency();
 	}
 	
 	/**
@@ -43,11 +44,13 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	public NumNoopProfile(NumNoopProfile nnp) {
 		super(nnp.name);
 		this.numReq = nnp.numReq;
+		latMap = new NumNoopFakeLatency();
 	}
 
 	@Override
 	public NumNoopProfile clone() {
-		return new NumNoopProfile(this);
+		latMap = new NumNoopFakeLatency();
+		return new NumNoopProfile(this);	
 	}
 
 	@Override
@@ -66,6 +69,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	public NumNoopProfile(JSONObject json) throws JSONException {
 		super(json.getString(SERVICE_NAME));
 		this.numReq =json.getInt(NUM_REQUEST);
+		latMap = new NumNoopFakeLatency();
 	}
 	
 	@Override
