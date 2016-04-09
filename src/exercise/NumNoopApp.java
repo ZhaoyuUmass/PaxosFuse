@@ -85,7 +85,7 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 
 	@Override
 	public boolean restore(String name, String state) {
-		
+		System.out.println(this+":restore "+name+" "+state);
 		if(state == null){
 			return true;
 		}
@@ -124,8 +124,7 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 		if (request.toString().equals(Request.NO_OP)){
 			return true;
 		}
-		
-		
+				
 		switch ((AppRequest.PacketType) (request.getRequestType())) {
 		case DEFAULT_APP_REQUEST:
 			return processRequest((AppRequest) request, doNotReplyToClient);

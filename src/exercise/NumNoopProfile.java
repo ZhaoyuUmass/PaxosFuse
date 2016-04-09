@@ -72,7 +72,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 			this.mostActiveRegion = update.mostActiveRegion;
 			this.numReq = update.numReq;
 		}
-		System.out.println("Coordinator combines "+this.numReq+"requests.");	
+		System.out.println("Coordinator combines "+this.numReq+" requests.");	
 	}
 
 
@@ -125,7 +125,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	
 	@Override
 	public ArrayList<InetAddress> shouldReconfigure(ArrayList<InetAddress> curActives, InterfaceGetActiveIPs nodeConfig) {
-		if(numReq > REPORT_EVERY_FEW_REQUEST){
+		if(numReq >= REPORT_EVERY_FEW_REQUEST){
 			ArrayList<InetAddress> reconfiguredAddresses = new ArrayList<InetAddress>();
 			System.out.println("The most active region is "+mostActiveRegion);
 			
