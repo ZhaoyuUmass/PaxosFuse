@@ -60,6 +60,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	public NumNoopProfile(JSONObject json) throws JSONException {
 		super(json.getString(SERVICE_NAME));
 		this.mostActiveRegion = json.getString(HOST);
+		this.numReq = json.getInt(NUM_REQ);
 	}
 	
 	
@@ -155,7 +156,6 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		 */
 		if(numReq >= REPORT_THRESHOLD ){
 			System.out.println("Should report to reconfigurator ...");
-			this.numReq = 0;
 			return true;
 		}
 		return false;
