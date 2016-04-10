@@ -20,12 +20,12 @@ import edu.umass.cs.reconfiguration.reconfigurationutils.InterfaceGetActiveIPs;
  */
 public class NumNoopProfile extends AbstractDemandProfile{
 	private final static int RECONFIGURATION_THRESHOLD = 20;
+	private final static int REPORT_THRESHOLD = 5;
 	private final static String SERVICE_NAME = "service_name";
-	private final static String SHOULD_RECONFIGURE = "should_reconfigure";
+	private final static String NUM_REQ = "num_request";
 	private final static String HOST = "host";
 	
 	private Integer numReq = 0;
-	private boolean shouldReconfigue = false;
 	private NumNoopProfile lastReconfiguredProfile = null;
 	
 	private NumNoopFakeLatency latMap = new NumNoopFakeLatency();
@@ -66,9 +66,11 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	@Override
 	public void combine(AbstractDemandProfile dp) {
 		NumNoopProfile update = (NumNoopProfile) dp;
-		if( !update.mostActiveRegion.equals(this.mostActiveRegion)){
+		if( ! update.mostActiveRegion.equals(this.mostActiveRegion)){
 			this.mostActiveRegion = update.mostActiveRegion;
-			this.shouldReconfigue = true;
+			this.numReq = update.numReq;
+		} else{
+			this.numReq = this.numReq + update.numReq;
 		}
 		System.out.println("Coordinator combines update request "+update);	
 	}
@@ -80,7 +82,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		JSONObject json = new JSONObject();
 		try {
 			json.put(SERVICE_NAME, this.name);
-			json.put(SHOULD_RECONFIGURE, this.shouldReconfigue);
+			json.put(NUM_REQ, REPORT_THRESHOLD);
 			json.put(HOST, this.mostActiveRegion);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -124,7 +126,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	
 	@Override
 	public ArrayList<InetAddress> shouldReconfigure(ArrayList<InetAddress> curActives, InterfaceGetActiveIPs nodeConfig) {
-		if(this.shouldReconfigue){
+		if(this.numReq > RECONFIGURATION_THRESHOLD){
 			ArrayList<InetAddress> reconfiguredAddresses = new ArrayList<InetAddress>();
 			System.out.println("The most active region is "+mostActiveRegion);
 			
@@ -137,7 +139,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 			
 			System.out.println("reconfigured address set is "+reconfiguredAddresses);
 			
-			this.shouldReconfigue = false;
+			this.numReq = 0;
 			return reconfiguredAddresses;
 		}else{
 			return null;
@@ -151,8 +153,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		 * a replica receives too many requests from a
 		 * region. 
 		 */
-		if(numReq >= RECONFIGURATION_THRESHOLD ){
-			this.shouldReconfigue = true;
+		if(numReq >= REPORT_THRESHOLD ){
 			this.numReq = 0;
 			return true;
 		}
