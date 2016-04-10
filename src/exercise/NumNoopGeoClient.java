@@ -161,7 +161,7 @@ public class NumNoopGeoClient extends ReconfigurableAppClientAsync{
 		} 
 		
 		System.out.println("Sent "+NUM_REQ+" requests, received "+(received-timeout)+" requests and "+ timeout + " requests timed out"
-				+ ". The average latency is "+totalLatency/received+"ms");
+				+ ". The average latency is "+totalLatency/(received-timeout)+"ms");
 		
 	}
 
