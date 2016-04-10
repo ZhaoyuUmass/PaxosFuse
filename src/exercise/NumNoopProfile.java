@@ -68,7 +68,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		NumNoopProfile update = (NumNoopProfile) dp;
 		if( !update.mostActiveRegion.equals(this.mostActiveRegion)){
 			this.mostActiveRegion = update.mostActiveRegion;
-			this.shouldReconfigue = update.shouldReconfigue;
+			this.shouldReconfigue = true;
 		}
 		System.out.println("Coordinator combines update request "+update);	
 	}
@@ -80,16 +80,13 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		JSONObject json = new JSONObject();
 		try {
 			json.put(SERVICE_NAME, this.name);
-			json.put(SHOULD_RECONFIGURE, true);
+			json.put(SHOULD_RECONFIGURE, this.shouldReconfigue);
 			json.put(HOST, this.mostActiveRegion);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		System.out.println("getStats:"+json.toString());
-		if(this.shouldReconfigue){
-			// reset
-			this.shouldReconfigue = false;
-		}
+		
 		return json;
 	}
 
