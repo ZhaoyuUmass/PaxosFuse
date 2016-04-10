@@ -63,7 +63,7 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 			return true;
 		}
 		
-		System.out.println(this+": received AppRequest "+request);
+		//System.out.println(this+": received AppRequest "+request);
 		
 		String name = request.getServiceName();
 		int value = Integer.parseInt(request.getValue());
@@ -74,7 +74,7 @@ public class NumNoopApp extends AbstractReconfigurablePaxosApp<String>
 			appData.put(name, 0);
 		}
 		
-		System.out.println(this+": execution is done for AppRequest "+request);	
+		//System.out.println(this+": execution is done for AppRequest "+request);	
 		return true;
 	}
 

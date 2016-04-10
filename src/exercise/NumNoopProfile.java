@@ -154,6 +154,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 		 * region. 
 		 */
 		if(numReq >= REPORT_THRESHOLD ){
+			System.out.println("Should report to reconfigurator ...");
 			this.numReq = 0;
 			return true;
 		}
