@@ -19,7 +19,8 @@ import edu.umass.cs.reconfiguration.reconfigurationutils.InterfaceGetActiveIPs;
  *
  */
 public class NumNoopProfile extends AbstractDemandProfile{
-	private final static int REPORT_EVERY_FEW_REQUEST = 20;
+	private final static int REPORT_EVERY_FEW_REQUEST = 5;
+	private final static int RECONFIGURATION_THRESHOLD = 20;
 	private final static String SERVICE_NAME = "service_name";
 	private final static String NUM_REQUEST = "num_request";
 	private final static String HOST = "host";
@@ -125,7 +126,7 @@ public class NumNoopProfile extends AbstractDemandProfile{
 	
 	@Override
 	public ArrayList<InetAddress> shouldReconfigure(ArrayList<InetAddress> curActives, InterfaceGetActiveIPs nodeConfig) {
-		if(numReq >= REPORT_EVERY_FEW_REQUEST){
+		if(numReq >= RECONFIGURATION_THRESHOLD){
 			ArrayList<InetAddress> reconfiguredAddresses = new ArrayList<InetAddress>();
 			System.out.println("The most active region is "+mostActiveRegion);
 			
@@ -148,14 +149,14 @@ public class NumNoopProfile extends AbstractDemandProfile{
 
 	@Override
 	public boolean shouldReport() {	
-		/*
+		
 		if(numReq >= REPORT_EVERY_FEW_REQUEST ){			
 			numReq = 0;
 			return true;
 		}
 		return false;
-		*/
-		return true;
+		
+		//return true;
 	}
 	
 	protected static List<String> asSortedList() {

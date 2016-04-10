@@ -48,6 +48,7 @@ public class NumNoopAppClient extends ReconfigurableAppClientAsync {
 		
 	}
 	
+	@SuppressWarnings("unused")
 	private static void sendRequestAfterStop(NumNoopAppClient client, String name) throws IOException{
 		for (String activeName:PaxosConfig.getActives().keySet()) {
 			System.out.println("Active: "+activeName);
